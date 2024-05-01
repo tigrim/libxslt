@@ -1,12 +1,19 @@
 #define IN_LIBEXSLT
 #include "libexslt/libexslt.h"
 
+#if defined(_WIN32) && !defined (__CYGWIN__) && (!__MINGW32__)
+#include <win32config.h>
+#else
+#include "config.h"
+#endif
+
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 #include <libxml/parser.h>
 #include <libxml/hash.h>
 
+#include <libxslt/xsltconfig.h>
 #include <libxslt/xsltutils.h>
 #include <libxslt/xsltInternals.h>
 #include <libxslt/extensions.h>
@@ -98,18 +105,13 @@ exsltSaxonExpressionFunction (xmlXPathParserContextPtr ctxt, int nargs) {
     ret = xmlHashLookup(hash, arg);
 
     if (ret == NULL) {
-        ret = xmlXPathCtxtCompile(tctxt->xpathCtxt, arg);
-        if (ret == NULL) {
-            xmlFree(arg);
-            xmlXPathSetError(ctxt, XPATH_EXPR_ERROR);
-            return;
-        }
-        if (xmlHashAddEntry(hash, arg, (void *) ret) < 0) {
-            xmlXPathFreeCompExpr(ret);
-            xmlFree(arg);
-            xmlXPathSetError(ctxt, XPATH_MEMORY_ERROR);
-            return;
-        }
+	 ret = xmlXPathCtxtCompile(tctxt->xpathCtxt, arg);
+	 if (ret == NULL) {
+	      xmlFree(arg);
+              xmlXPathSetError(ctxt, XPATH_EXPR_ERROR);
+	      return;
+	 }
+	 xmlHashAddEntry(hash, arg, (void *) ret);
     }
 
     xmlFree(arg);

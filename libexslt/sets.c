@@ -1,6 +1,12 @@
 #define IN_LIBEXSLT
 #include "libexslt/libexslt.h"
 
+#if defined(_WIN32) && !defined (__CYGWIN__) && (!__MINGW32__)
+#include <win32config.h>
+#else
+#include "config.h"
+#endif
+
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
@@ -112,15 +118,13 @@ exsltSetsDistinctFunction (xmlXPathParserContextPtr ctxt, int nargs) {
     /* !!! must be sorted !!! */
     ret = xmlXPathDistinctSorted(ns);
 
-    if (ret != ns)
-	xmlXPathFreeNodeSet(ns);
+	if (ret != ns)
+		xmlXPathFreeNodeSet(ns);
 
     obj = xmlXPathWrapNodeSet(ret);
-    if (obj != NULL) {
-        obj->user = user;
-        obj->boolval = boolval;
-    }
-    valuePush(ctxt, obj);
+    obj->user = user;
+    obj->boolval = boolval;
+    valuePush((ctxt), obj);
 }
 
 /**

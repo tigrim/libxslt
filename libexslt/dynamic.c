@@ -23,10 +23,17 @@
 #define IN_LIBEXSLT
 #include "libexslt/libexslt.h"
 
+#if defined(_WIN32) && !defined (__CYGWIN__) && (!__MINGW32__)
+#include <win32config.h>
+#else
+#include "config.h"
+#endif
+
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
+#include <libxslt/xsltconfig.h>
 #include <libxslt/xsltutils.h>
 #include <libxslt/xsltInternals.h>
 #include <libxslt/extensions.h>
@@ -188,19 +195,19 @@ exsltDynMapFunction(xmlXPathParserContextPtr ctxt, int nargs)
                         break;
                     case XPATH_BOOLEAN:
                         if (container != NULL) {
-                            xmlNodePtr newChildNode =
+                            xmlNodePtr cur =
                                 xmlNewTextChild((xmlNodePtr) container, NULL,
                                                 BAD_CAST "boolean",
                                                 BAD_CAST (subResult->
                                                 boolval ? "true" : ""));
-                            if (newChildNode != NULL) {
-                                newChildNode->ns =
-                                    xmlNewNs(newChildNode,
+                            if (cur != NULL) {
+                                cur->ns =
+                                    xmlNewNs(cur,
                                              BAD_CAST
                                              "http://exslt.org/common",
                                              BAD_CAST "exsl");
                                 xmlXPathNodeSetAddUnique(ret->nodesetval,
-                                                         newChildNode);
+                                                         cur);
                             }
                         }
                         break;
@@ -209,37 +216,37 @@ exsltDynMapFunction(xmlXPathParserContextPtr ctxt, int nargs)
                             xmlChar *val =
                                 xmlXPathCastNumberToString(subResult->
                                                            floatval);
-                            xmlNodePtr newChildNode =
+                            xmlNodePtr cur =
                                 xmlNewTextChild((xmlNodePtr) container, NULL,
                                                 BAD_CAST "number", val);
                             if (val != NULL)
                                 xmlFree(val);
 
-                            if (newChildNode != NULL) {
-                                newChildNode->ns =
-                                    xmlNewNs(newChildNode,
+                            if (cur != NULL) {
+                                cur->ns =
+                                    xmlNewNs(cur,
                                              BAD_CAST
                                              "http://exslt.org/common",
                                              BAD_CAST "exsl");
                                 xmlXPathNodeSetAddUnique(ret->nodesetval,
-                                                         newChildNode);
+                                                         cur);
                             }
                         }
                         break;
                     case XPATH_STRING:
                         if (container != NULL) {
-                            xmlNodePtr newChildNode =
+                            xmlNodePtr cur =
                                 xmlNewTextChild((xmlNodePtr) container, NULL,
                                                 BAD_CAST "string",
                                                 subResult->stringval);
-                            if (newChildNode != NULL) {
-                                newChildNode->ns =
-                                    xmlNewNs(newChildNode,
+                            if (cur != NULL) {
+                                cur->ns =
+                                    xmlNewNs(cur,
                                              BAD_CAST
                                              "http://exslt.org/common",
                                              BAD_CAST "exsl");
                                 xmlXPathNodeSetAddUnique(ret->nodesetval,
-                                                         newChildNode);
+                                                         cur);
                             }
                         }
                         break;

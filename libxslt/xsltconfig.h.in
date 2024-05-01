@@ -39,7 +39,7 @@ extern "C" {
 /**
  * LIBXSLT_VERSION_EXTRA:
  *
- * extra version information, used to show a Git commit description
+ * extra version information, used to show a CVS compilation
  */
 #define	LIBXSLT_VERSION_EXTRA "@LIBXSLT_VERSION_EXTRA@"
 
@@ -54,6 +54,26 @@ extern "C" {
 #define WITH_XSLT_DEBUG
 #endif
 
+#if @WITH_MEM_DEBUG@
+/**
+ * DEBUG_MEMORY:
+ *
+ * should be activated only when debugging libxslt. It replaces the
+ * allocator with a collect and debug shell to the libc allocator.
+ * Use configure --with-mem-debug to activate it on both library
+ */
+#define DEBUG_MEMORY
+
+/**
+ * DEBUG_MEMORY_LOCATION:
+ *
+ * should be activated only when debugging libxslt.
+ * DEBUG_MEMORY_LOCATION should be activated only when libxml has
+ * been configured with --with-debug-mem too
+ */
+#define DEBUG_MEMORY_LOCATION
+#endif
+
 /**
  * XSLT_NEED_TRIO:
  *
@@ -66,6 +86,7 @@ extern "C" {
 #define XSLT_NEED_TRIO
 #endif
 #ifdef __VMS
+#define HAVE_MATH_H 1
 #define HAVE_SYS_STAT_H 1
 #ifndef XSLT_NEED_TRIO
 #define XSLT_NEED_TRIO
